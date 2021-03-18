@@ -1,0 +1,7 @@
+#register ion-header ion-toolbar ion-buttons ion-back-button {
+    position: absolute;
+}
+
+#register .btn-register {
+    height: 50px;
+}

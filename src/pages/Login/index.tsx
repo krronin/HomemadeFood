@@ -19,10 +19,13 @@ import {
 	IonRow,
 	IonText,
 	IonTitle,
+    IonToast,
 } from "@ionic/react"
 
 import { logoFacebook, logoGoogle } from "ionicons/icons"
 import { Facebook } from "@ionic-native/facebook"
+
+import { login } from '../../utils/firebaseConfig'
 
 // Styles
 import "./index.css"
@@ -30,6 +33,9 @@ import "./index.css"
 const Login: React.FC = () => {
     const [userData, setUserData] = useState({ username: "", password: "" })
     const [showLoading, setShowLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
     const history = useHistory();
 
 	function updateUserData(data: object) {
@@ -51,6 +57,19 @@ const Login: React.FC = () => {
             });
     }
 
+    async function loginUser() {
+        setShowLoading(true);
+        const user = await login(userData.username, userData.password);
+        if (user && user.code) {
+            setToastMessage(user.message);
+        } else {
+            setToastMessage('User successfully loggedIn');
+            history.push('/dashboard')
+        }
+        setShowLoading(false);
+        setShowToast(true);
+    }
+
 	return (
 		<IonPage id="login-page">
             <IonContent>
@@ -61,6 +80,12 @@ const Login: React.FC = () => {
                     message={'Please wait...'}
                     duration={3000}
                     spinner="circular"
+                />
+                <IonToast
+                    isOpen={showToast}
+                    onDidDismiss={() => setShowToast(false)}
+                    message={toastMessage}
+                    duration={2000}
                 />
 				<IonGrid fixed>
 					<IonRow className="logo ion-align-items-center">
@@ -84,9 +109,7 @@ const Login: React.FC = () => {
 											<IonInput
 												type="email"
 												value={userData.username}
-												onIonChange={(e) =>
-													updateUserData({ username: e.detail.value! })
-												}
+												onIonChange={e => updateUserData({ username: e.detail.value! })}
 												required
 											/>
 										</IonItem>
@@ -95,9 +118,7 @@ const Login: React.FC = () => {
 											<IonInput
 												type="password"
 												value={userData.password}
-												onIonChange={(e) =>
-													updateUserData({ password: e.detail.value! })
-												}
+												onIonChange={e => updateUserData({ password: e.detail.value! })}
 												required
 											/>
 										</IonItem>
@@ -106,16 +127,20 @@ const Login: React.FC = () => {
 										fill="solid"
 										expand="block"
                                         className="ion-margin-top"
-                                        onClick={() => setShowLoading(true)}
-									>
+                                        onClick={() => loginUser()}>
 										<IonText>Sign In</IonText>
 									</IonButton>
 									<IonButton
 										fill="clear"
 										expand="block"
-										className="ion-margin-top"
-									>
+										className="ion-margin-top">
 										<IonText>Problem Signing in?</IonText>
+                                    </IonButton>
+                                    <IonButton
+										fill="clear"
+                                        expand="block"
+                                        onClick={() => history.push('/register')}>
+										<IonText>New User</IonText>
 									</IonButton>
 								</IonCardContent>
 							</IonCard>

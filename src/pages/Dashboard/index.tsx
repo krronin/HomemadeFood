@@ -1,4 +1,4 @@
-import React, { useState }from "react";
+import React, { useEffect, useState }from "react";
 import { Geolocation } from '@capacitor/core';
 
 
@@ -15,11 +15,13 @@ import {
     IonPage,
     IonRow,
     IonText,
-    IonToolbar
+    IonToolbar,
+    useIonViewWillEnter
 } from "@ionic/react";
 
 // Utils
 import { EnumCategory } from '../../utils/enums';
+import { getFoodCategories } from '../../utils/firebaseConfig'
 
 // Components
 import Modal from '../../components/Modal';
@@ -31,7 +33,7 @@ import CardList from '../../components/CardList';
 import './index.css';
 import { menuSharp } from "ionicons/icons";
 
-const foodCategories: Array<string> = ['All', 'Food1', 'Food2', 'Food3', 'Food4', 'Food5', 'Food6', 'Food7', 'Food8', 'Food9'];
+
 const results: Array<string> = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 interface Props { }
@@ -41,25 +43,25 @@ const Dashboard: React.FC<Props> = () => {
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [currentLocation, setCurrentLocation] = useState({ name: 'current user location' });
     
-    const [foodCategory, setFoodCategory] = useState(foodCategories[0]);
+    const [foodCategories, setFoodCategories]: Array<any> = useState([]);
+    const [foodCategory, setFoodCategory]: any = useState(null);
     const [items, setItems] = useState(results);
 
     const isShowModal = Boolean(category.length === 0);
     const categories = [EnumCategory.POST, EnumCategory.ORDER];
-
-    async function getCurrentPosition() {
-        const coordinates = await Geolocation.getCurrentPosition();
-        console.log('Current', coordinates);
-    }
 
     function didSelectCategory(category: string) {
         setCategory(category);
         setIsFetchingData(true);
     }
 
-    function updateFoodCategory(foodCategory: string) {
-        setFoodCategory(foodCategory);
+    async function updateFoodCategories() {
+        const categories: Array<any> = await getFoodCategories();
+        setFoodCategories(categories);
+        setFoodCategory(categories[0]);
     }
+
+    useIonViewWillEnter(() => updateFoodCategories())
     
     return (
         <IonPage id="dashboard">
@@ -109,7 +111,7 @@ const Dashboard: React.FC<Props> = () => {
                         <CategoryList
                             categories={foodCategories}
                             selected={foodCategory}
-                            selectCategory={(category: string) => updateFoodCategory(category)} />
+                            selectCategory={(category: any) => setFoodCategory(category)} />
                         <IonItem className="results-count">
                             <IonText>Available from <strong>{results.length}</strong> homes</IonText>
                         </IonItem>

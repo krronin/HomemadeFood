@@ -4,24 +4,28 @@ import { IonText, IonGrid, IonRow, IonCol } from "@ionic/react";
 import './index.css';
 
 interface Props {
-    categories: Array<string>,
-    selected: string,
+    categories: Array<any>,
+    selected: any,
     selectCategory: Function
 }
 
-const CategoryList: React.FC<Props> = ({ categories, selected, selectCategory }) => {
+const CategoryList: React.FC<Props> = ({
+    categories,
+    selected,
+    selectCategory
+}) => {
 
     return (
         <IonGrid id="category-list">
             <IonRow className="ion-justify-content-between ion-align-items-center ion-nowrap">
                 {
-                    categories.map(category => {
+                    categories.map((category: any) => {
                         return (
                             <IonCol
-                                key={category}
-                                className={"ion-text-center " + (category === selected ? "selected" : "")}
+                                key={category.id}
+                                className={"ion-text-center " + (category.id === selected.id ? "selected" : "")}
                                 onClick={() => selectCategory(category)}>
-                                <IonText>{category}</IonText>
+                                <IonText>{category.name}</IonText>
                             </IonCol>
                         )
                     })

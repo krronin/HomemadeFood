@@ -6,6 +6,7 @@ import Menu from "./components/Menu"
 // Pages
 import Page from "./pages/Page"
 import Login from "./pages/Login"
+import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import FoodHome from "./pages/FoodHome"
 
@@ -43,13 +44,16 @@ const App: React.FC = () => {
 						</Route>
 						<Route path="/login" exact={true}>
 							<Login />
+                        </Route>
+                        <Route path="/register" exact={true}>
+							<Register />
 						</Route>
 						<Route path="/dashboard" exact={true}>
 							<Dashboard />
                         </Route>
                         <Route path="/foodHome" exact={true}>
 							<FoodHome />
-						</Route>
+                        </Route>
 					</IonRouterOutlet>
 				</IonSplitPane>
 			</IonReactRouter>
