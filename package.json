@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@capacitor/core": "2.4.7",
+    "@ionic-native/core": "^5.31.1",
     "@ionic-native/facebook": "^5.31.1",
     "@ionic-native/firebase": "^5.31.1",
     "@ionic/react": "^5.5.0",
