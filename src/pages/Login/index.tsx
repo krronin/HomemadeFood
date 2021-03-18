@@ -46,7 +46,6 @@ const Login: React.FC = () => {
         Facebook.login(permissions)
             .then((response) => {
                 if (response.status === 'connected') {
-                    debugger;
                     // Facebook.getUserDetail(response.authResponse.userID)
                 }
             });
