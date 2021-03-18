@@ -1,0 +1,10 @@
+.user-location {
+    --background: transparent;
+}
+
+.user-location ion-text {
+    text-transform: capitalize;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+}

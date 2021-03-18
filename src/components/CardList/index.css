@@ -1,0 +1,21 @@
+#results ion-item ion-card ion-card-header .logo-banner {
+    width: 100%;
+    height: 150px;
+}
+
+#results ion-item ion-card ion-card-header .logo-thumbnail {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    margin: auto;
+    position: absolute;
+    margin-top: -40px;
+    margin-left: calc(50% - 40px);
+    border-radius: 80px;
+    border: 1px solid grey;
+    z-index: 1;
+}
+
+#results ion-item ion-card ion-card-header ion-card-title {
+    margin-top: 40px;
+}

@@ -1,0 +1,9 @@
+#dashboard .categories {
+    /* --background: red; */
+    display: flex;
+}
+
+#dashboard ion-content .results-count {
+    margin: 10px;
+    font-size: 1.1rem;
+}
