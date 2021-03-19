@@ -1,6 +1,5 @@
 import React, { useEffect, useState }from "react";
-import { Geolocation } from '@capacitor/core';
-
+import { useHistory } from "react-router-dom"
 
 import {
     IonButton,
@@ -39,7 +38,9 @@ const results: Array<string> = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10
 interface Props { }
 
 const Dashboard: React.FC<Props> = () => {
-    const [category, setCategory] = useState('');
+    const actions = [EnumCategory.POST, EnumCategory.ORDER];
+    const [userAction, setUserAction] = useState('');
+
     const [isFetchingData, setIsFetchingData] = useState(false);
     const [currentLocation, setCurrentLocation] = useState({ name: 'current user location' });
     
@@ -47,76 +48,83 @@ const Dashboard: React.FC<Props> = () => {
     const [foodCategory, setFoodCategory]: any = useState(null);
     const [items, setItems] = useState(results);
 
-    const isShowModal = Boolean(category.length === 0);
-    const categories = [EnumCategory.POST, EnumCategory.ORDER];
+    const history = useHistory();
 
-    function didSelectCategory(category: string) {
-        setCategory(category);
-        setIsFetchingData(true);
+    function didSelectCategory(action: string) {
+        setUserAction(action);
+        if (action === EnumCategory.ORDER) {
+            setIsFetchingData(true);
+            updateFoodCategories();
+        } else {
+            history.push('/foodHome');
+        }
     }
 
     async function updateFoodCategories() {
         const categories: Array<any> = await getFoodCategories();
         setFoodCategories(categories);
         setFoodCategory(categories[0]);
+        setIsFetchingData(false);
     }
 
-    useIonViewWillEnter(() => updateFoodCategories())
+    function resultsForOrder() {
+        if (foodCategories && foodCategories.length) {
+            return (
+                <div className="results">
+                    <CategoryList
+                        categories={foodCategories}
+                        selected={foodCategory}
+                        selectCategory={(category: any) => setFoodCategory(category)} />
+                    <IonItem className="results-count">
+                        <IonText>Available from <strong>{results.length}</strong> homes</IonText>
+                    </IonItem>
+                    <CardList items={items}/>
+                </div>
+            )
+        }
+    }
     
     return (
         <IonPage id="dashboard">
             <IonHeader>
-                { !isShowModal &&
-                    <IonToolbar color="secondary" className="ion-text-center ion-text-capitalize">
-                        {/* <IonButton fill="clear" slot="start" onClick={async () => await menuController.toggle()}>
-                            <IonIcon icon={menuSharp} size="large" color="light" />
-                        </IonButton> */}
-                        <Location
-                            location={currentLocation} />
-                        {/* <IonButtons slot="secondary">
-                            <IonButton slot="icon-only">
-                                <IonIcon icon={funnelSharp} />
-                            </IonButton>
-                        </IonButtons> */}
-                    </IonToolbar>
-                }
+                <IonToolbar color="secondary" className="ion-text-center ion-text-capitalize">
+                    {/* <IonButton fill="clear" slot="start" onClick={async () => await menuController.toggle()}>
+                        <IonIcon icon={menuSharp} size="large" color="light" />
+                    </IonButton> */}
+                    <Location
+                        location={currentLocation} />
+                    {/* <IonButtons slot="secondary">
+                        <IonButton slot="icon-only">
+                            <IonIcon icon={funnelSharp} />
+                        </IonButton>
+                    </IonButtons> */}
+                </IonToolbar>
             </IonHeader>
             <IonContent>
-                { isShowModal &&
-                    <Modal
-                        classes="categories"
-                        showModal={true}
-                        closeModal={() => { }}
-                        backdropDismiss={false}>
-                        <IonGrid>
-                            {
-                                categories.map((category, index) => {
-                                    return (
-                                        <IonRow key={`category-${index}`}>
-                                            <IonCol>
-                                                <IonButton
-                                                    expand="block"
-                                                    size="large"
-                                                    onClick={() => didSelectCategory(category)}>{category}</IonButton>
-                                            </IonCol>
-                                        </IonRow>
-                                    );
-                                })
-                            }
-                        </IonGrid>
-                    </Modal>
-                }
-                { !isShowModal &&
-                    <div>
-                        <CategoryList
-                            categories={foodCategories}
-                            selected={foodCategory}
-                            selectCategory={(category: any) => setFoodCategory(category)} />
-                        <IonItem className="results-count">
-                            <IonText>Available from <strong>{results.length}</strong> homes</IonText>
-                        </IonItem>
-                        <CardList items={items}/>
-                    </div>
+                <Modal
+                    classes="categories"
+                    showModal={!userAction.length}
+                    closeModal={() => { }}
+                    backdropDismiss={false}>
+                    <IonGrid>
+                        {
+                            actions.map((action, index) => {
+                                return (
+                                    <IonRow key={`category-${index}`}>
+                                        <IonCol>
+                                            <IonButton
+                                                expand="block"
+                                                size="large"
+                                                onClick={() => didSelectCategory(action)}>{action}</IonButton>
+                                        </IonCol>
+                                    </IonRow>
+                                );
+                            })
+                        }
+                    </IonGrid>
+                </Modal>
+                {
+                    resultsForOrder()
                 }
                 <IonLoading
                     isOpen={isFetchingData}

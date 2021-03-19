@@ -14,6 +14,20 @@ Firebase.initializeApp(config)
 
 const Database = Firebase.firestore();
 
+export async function registerWithFacebbookProvider() {
+    const provider = new Firebase.auth.FacebookAuthProvider();
+    return await Firebase.auth().signInWithPopup(provider)
+        .then(response => response)
+        .catch(error => error);
+}
+
+export async function registerWithGoogleProvider() {
+    const provider = new Firebase.auth.GoogleAuthProvider();
+    return await Firebase.auth().signInWithPopup(provider)
+        .then(response => response)
+        .catch(error => error);
+}
+
 export async function registerNewUser(email: string, password: string) {
     return await Firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(() => Firebase.auth().currentUser)

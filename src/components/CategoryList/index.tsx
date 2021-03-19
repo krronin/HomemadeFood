@@ -15,15 +15,16 @@ const CategoryList: React.FC<Props> = ({
     selectCategory
 }) => {
 
+    const selectedCategory = selected ? selected : categories[0];
     return (
         <IonGrid id="category-list">
             <IonRow className="ion-justify-content-between ion-align-items-center ion-nowrap">
                 {
-                    categories.map((category: any) => {
+                    categories.map((category: any, index: number) => {
                         return (
                             <IonCol
                                 key={category.id}
-                                className={"ion-text-center " + (category.id === selected.id ? "selected" : "")}
+                                className={"ion-text-center " + (category.id === selectedCategory.id ? "selected" : "")}
                                 onClick={() => selectCategory(category)}>
                                 <IonText>{category.name}</IonText>
                             </IonCol>

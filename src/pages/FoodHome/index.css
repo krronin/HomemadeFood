@@ -1,0 +1,7 @@
+#post-food ion-header ion-toolbar ion-buttons ion-back-button {
+    position: absolute;
+}
+
+#post-food .btn-post-food {
+    height: 50px;
+}

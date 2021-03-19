@@ -23,9 +23,8 @@ import {
 } from "@ionic/react"
 
 import { logoFacebook, logoGoogle } from "ionicons/icons"
-import { Facebook } from "@ionic-native/facebook"
 
-import { login } from '../../utils/firebaseConfig'
+import { login, registerWithGoogleProvider, registerWithFacebbookProvider } from '../../utils/firebaseConfig'
 
 // Styles
 import "./index.css"
@@ -47,14 +46,34 @@ const Login: React.FC = () => {
         history.push('/dashboard');
     }
 
-    function signInWithFacebook() {
-        const permissions: Array<string> = ['public_profile', 'user_friends', 'email'];
-        Facebook.login(permissions)
-            .then((response) => {
-                if (response.status === 'connected') {
-                    // Facebook.getUserDetail(response.authResponse.userID)
-                }
-            });
+    async function signInWithFacebook() {
+        const response = await registerWithFacebbookProvider();
+        if (response && response.code) {
+            // response.email
+            setToastMessage(response.message);
+        } else {
+            console.log(response);
+            // add user details to the firestore collection
+            // ask user to update all the remaining details on the profile page
+            // else redirect to the dashboard page
+            setToastMessage('User successfully loggedIn');
+            history.push('/dashboard')
+        }
+    }
+
+    async function signInWithGoogle() {
+        const response = await registerWithGoogleProvider();
+        if (response && response.code) {
+            // response.email
+            setToastMessage(response.message);
+        } else {
+            console.log(response);
+            // add user details to the firestore collection
+            // ask user to update all the remaining details on the profile page
+            // else redirect to the dashboard page
+            setToastMessage('User successfully loggedIn');
+            history.push('/dashboard')
+        }
     }
 
     async function loginUser() {
@@ -154,7 +173,7 @@ const Login: React.FC = () => {
 					<IonRow className="ion-text-center ion-padding-top social">
 						<IonCol>
 							<IonIcon icon={logoFacebook} color="primary" onClick={() => signInWithFacebook()}/>
-							<IonIcon icon={logoGoogle} color="danger" />
+							<IonIcon icon={logoGoogle} color="danger" onClick={() => signInWithGoogle()}/>
 						</IonCol>
 					</IonRow>
 				</IonGrid>
